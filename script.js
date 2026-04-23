@@ -111,15 +111,24 @@ async function loadFile(path) {
 }
 
 /* ---------------------------------------------------------
-   TOP MENU (all _folders, with auto-load)
+   TOP MENU (all _folders)
 --------------------------------------------------------- */
 async function buildTopMenu() {
   const rootItems = await fetchFolder("");
+
+  if (!Array.isArray(rootItems)) {
+    console.error("GitHub API returned invalid rootItems:", rootItems);
+    return;
+  }
 
   // All folders starting with "_"
   const topFolders = rootItems.filter(
     i => i.type === "dir" && i.name.startsWith("_")
   );
+
+  if (topFolders.length === 0) {
+    console.warn("No _folders found in repo root.");
+  }
 
   for (const folder of topFolders) {
     const cleanName = folder.name.replace(/^_/, "");
@@ -135,6 +144,11 @@ async function buildTopMenu() {
 
     // Fetch contents of this _folder
     const contents = await fetchFolder(folder.path);
+
+    if (!Array.isArray(contents)) {
+      console.error("Invalid folder contents for:", folder.path, contents);
+      continue;
+    }
 
     /* ---------------------------------------------------------
        +FOLDERS inside this _folder
@@ -152,11 +166,7 @@ async function buildTopMenu() {
 
       subItem.addEventListener("click", async (e) => {
         e.stopPropagation();
-
-        // Load sidebar
         await loadSidebarForFolder(folder.name, sub.path, `${cleanName} / ${subClean}`);
-
-        // ⭐ Auto-load first markdown file inside this +folder
         await autoLoadFirstMarkdown(sub.path);
       });
 
@@ -190,6 +200,7 @@ async function buildTopMenu() {
     menuContainer.appendChild(item);
   }
 }
+
 
 
 /* ---------------------------------------------------------
