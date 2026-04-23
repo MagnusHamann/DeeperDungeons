@@ -17,7 +17,7 @@ async function fetchFolder(path) {
 async function buildFolderNode(path, name) {
   const node = document.createElement("div");
   node.classList.add("item", "folder");
-  node.textContent = "📁 " + name;
+  node.textContent = name;
 
   const childrenContainer = document.createElement("div");
   childrenContainer.classList.add("children");
@@ -57,7 +57,7 @@ async function buildFolderNode(path, name) {
 function buildFileNode(path, name) {
   const node = document.createElement("div");
   node.classList.add("item", "file");
-  node.textContent = "📄 " + name;
+  node.textContent = + name;
 
   node.addEventListener("click", (e) => {
     e.stopPropagation();
