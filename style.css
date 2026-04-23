@@ -1,12 +1,17 @@
+/* ---------------------------------------------------------
+   GLOBAL LAYOUT
+--------------------------------------------------------- */
 body {
   margin: 0;
   height: 100vh;
   font-family: sans-serif;
   display: flex;
-  flex-direction: column; /* topmenu on top, main area below */
+  flex-direction: column; /* top menu above main area */
 }
 
-/* TOP MENU BAR */
+/* ---------------------------------------------------------
+   TOP MENU
+--------------------------------------------------------- */
 #topmenu {
   width: 100%;
   background: #7a1b1b;
@@ -20,7 +25,6 @@ body {
   font-family: Georgia, serif;
 }
 
-/* Each top-level menu item */
 .topmenu-item {
   position: relative;
   cursor: pointer;
@@ -29,7 +33,6 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* Dropdown container */
 .dropdown {
   display: none;
   position: absolute;
@@ -43,12 +46,10 @@ body {
   z-index: 20;
 }
 
-/* Show dropdown on hover */
 .topmenu-item:hover .dropdown {
   display: block;
 }
 
-/* Dropdown items */
 .dropdown-item {
   padding: 6px 12px;
   cursor: pointer;
@@ -58,13 +59,18 @@ body {
   background: #e0e0e0;
 }
 
-/* MAIN AREA: sidebar + content */
+/* ---------------------------------------------------------
+   MAIN AREA (SIDEBAR + CONTENT)
+--------------------------------------------------------- */
 #main {
   flex: 1;
   display: flex;
   min-height: 0;
 }
 
+/* ---------------------------------------------------------
+   SIDEBAR
+--------------------------------------------------------- */
 #sidebar {
   width: 280px;
   background: #f4f4f4;
@@ -78,15 +84,24 @@ body {
   cursor: pointer;
 }
 
-/* Top-level headers */
+/* Top-level +folder headers */
+#sidebar > .folder {
+  font-size: 1.3rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #7a1b1b;
+  margin-top: 20px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 4px;
+}
+
+/* Nested folder headers */
 #sidebar .folder {
   font-size: 1.2rem;
   font-weight: 600;
   margin-top: 12px;
   padding: 6px 4px;
   color: #333;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 4px;
 }
 
 /* Subheaders (files) */
@@ -98,14 +113,14 @@ body {
   color: #444;
 }
 
-/* Indentation for nested folders */
+/* Nested folder indentation */
 #sidebar .children .folder {
   font-size: 1.05rem;
   margin-top: 6px;
   padding-left: 10px;
 }
 
-/* Indentation for nested files */
+/* Nested file indentation */
 #sidebar .children .file {
   padding-left: 20px;
 }
@@ -125,16 +140,9 @@ body {
   display: block;
 }
 
-/* Make top-level folders look like chapter titles */
-#sidebar > .folder {
-  font-size: 1.3rem;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: #7a1b1b;
-  margin-top: 20px;
-}
-
-/* CONTENT AREA */
+/* ---------------------------------------------------------
+   CONTENT AREA
+--------------------------------------------------------- */
 #content {
   flex: 1;
   padding: 40px;
