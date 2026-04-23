@@ -1,2 +1,0 @@
-# Arcanist Base Class
-details
