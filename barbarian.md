@@ -16,7 +16,7 @@ Beginning at 2nd level, you can mark a creature as a reaction when it becomes *b
 
 While raging, you can make a special reckless attack with a melee or ranged weapon as an action:
 
-**Hindering Strike.** On a hit, the target's speed is reduced by a number of feet equal to 5 times your rage potency until the beginning of your next turn. If this attack was a ranged attack with an *overdraw* or *thrown* weapon, you can add your rage potency to the damage roll.
+- **Hindering Strike.** On a hit, the target's speed is reduced by a number of feet equal to 5 times your rage potency until the beginning of your next turn. If this attack was a ranged attack with an *overdraw* or *thrown* weapon, you can add your rage potency to the damage roll.
 
 ### Leader of the Hunt
 
@@ -29,6 +29,6 @@ Beginning at 10th level, you gain the following benefits:
 
 Beginning at 17th level, you can draw on ancient predators to make a special melee attack as an action, a Predator Strike. This attack must be made with a melee weapon you are wielding against a target marked by your hunter of prey feature:
 
-**Predator Strike.** On a hit, the target becomes vulnerable to all damage from this attack and must succeed on a Constitution saving throw or take an additional 3d12 damage from this attack. Once the attack has been resolved, this damage vulnerability ends.
+- **Predator Strike.** On a hit, the target becomes vulnerable to all damage from this attack and must succeed on a Constitution saving throw or take an additional 3d12 damage from this attack. Once the attack has been resolved, this damage vulnerability ends.
 
 You can use this special attack once between short or long rests.
