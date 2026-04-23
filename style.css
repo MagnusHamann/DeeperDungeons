@@ -6,7 +6,7 @@ body {
   height: 100vh;
   font-family: sans-serif;
   display: flex;
-  flex-direction: column; /* top menu above main area */
+  flex-direction: column;
 }
 
 /* ---------------------------------------------------------
@@ -60,7 +60,7 @@ body {
 }
 
 /* ---------------------------------------------------------
-   MAIN AREA (SIDEBAR + CONTENT)
+   MAIN AREA
 --------------------------------------------------------- */
 #main {
   flex: 1;
@@ -84,7 +84,6 @@ body {
   cursor: pointer;
 }
 
-/* Top-level +folder headers */
 #sidebar > .folder {
   font-size: 1.3rem;
   letter-spacing: 0.5px;
@@ -95,7 +94,6 @@ body {
   padding-bottom: 4px;
 }
 
-/* Nested folder headers */
 #sidebar .folder {
   font-size: 1.2rem;
   font-weight: 600;
@@ -104,7 +102,6 @@ body {
   color: #333;
 }
 
-/* Subheaders (files) */
 #sidebar .file {
   font-size: 1rem;
   font-weight: 400;
@@ -113,19 +110,16 @@ body {
   color: #444;
 }
 
-/* Nested folder indentation */
 #sidebar .children .folder {
   font-size: 1.05rem;
   margin-top: 6px;
   padding-left: 10px;
 }
 
-/* Nested file indentation */
 #sidebar .children .file {
   padding-left: 20px;
 }
 
-/* Hover effect */
 #sidebar .item:hover {
   background: #e8e8e8;
   border-radius: 4px;
@@ -150,7 +144,9 @@ body {
   background: #ffffff;
 }
 
-/* GitHub-style markdown container */
+/* ---------------------------------------------------------
+   MARKDOWN STYLING
+--------------------------------------------------------- */
 .markdown-body {
   max-width: 900px;
   margin: 0 auto;
