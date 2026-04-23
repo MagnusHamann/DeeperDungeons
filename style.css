@@ -36,8 +36,17 @@ body {
   display: block;
 }
 
-#content {
+  #content {
   flex: 1;
-  padding: 20px;
+  padding: 40px;
+  overflow-y: auto;
+  background: #ffffff;
+}
+
+.markdown-body {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
   overflow-y: auto;
 }
