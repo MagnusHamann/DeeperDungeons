@@ -142,14 +142,11 @@ async function buildTopMenu() {
     const item = document.createElement("div");
     item.classList.add("topmenu-item");
     item.textContent = cleanName;
-
-    // ⭐ ADDED — ensure dropdown anchors correctly
     item.style.position = "relative";
 
     const dropdown = document.createElement("div");
     dropdown.classList.add("dropdown");
 
-    // ⭐ ADDED — ensure dropdown is positioned correctly
     dropdown.style.position = "absolute";
     dropdown.style.top = "100%";
     dropdown.style.left = "0";
