@@ -132,7 +132,6 @@ async function buildTopMenu() {
 
     subItem.addEventListener("click", (e) => {
       e.stopPropagation();
-      // Sidebar shows which section we're in
       loadSidebarForPlusFolders(sub.path, `Classes / ${cleanName}`);
     });
 
@@ -145,12 +144,10 @@ async function buildTopMenu() {
 
 /* ---------------------------------------------------------
    SIDEBAR FOR +FOLDERS AND .md FILES
-   label = "Classes / Arcanist" etc.
 --------------------------------------------------------- */
 async function loadSidebarForPlusFolders(path, label) {
   sidebar.innerHTML = "";
 
-  // Header showing current section
   if (label) {
     const header = document.createElement("div");
     header.classList.add("folder");
@@ -160,7 +157,6 @@ async function loadSidebarForPlusFolders(path, label) {
 
   const items = await fetchFolder(path);
 
-  // +folders
   const plusFolders = items.filter(i => i.type === "dir" && i.name.startsWith("+"));
   for (const folder of plusFolders) {
     const cleanName = folder.name.replace(/^\+/, "");
@@ -168,7 +164,6 @@ async function loadSidebarForPlusFolders(path, label) {
     sidebar.appendChild(node);
   }
 
-  // Markdown files
   const mdFiles = items.filter(i => i.name.endsWith(".md"));
   for (const file of mdFiles) {
     const cleanName = file.name.replace(/\.md$/, "");
