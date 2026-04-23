@@ -52,11 +52,16 @@ async function fetchFolder(path) {
    FILE NODE
 --------------------------------------------------------- */
 function buildFileNode(path, name) {
-  const node = document.createElement("div");
+  const node = document.createElement("a");
   node.classList.add("item", "file");
   node.textContent = name;
+  node.href = "#";
+  node.style.cursor = "pointer";
+  node.style.textDecoration = "none";
+  node.style.color = "inherit";
 
   node.addEventListener("click", (e) => {
+    e.preventDefault();
     e.stopPropagation();
     loadFile(path);
   });
@@ -70,15 +75,24 @@ function buildFileNode(path, name) {
 async function buildPlusFolderNode(path, name) {
   const node = document.createElement("div");
   node.classList.add("item", "folder");
-  node.textContent = name;
+
+  // Create a clickable link wrapper
+  const link = document.createElement("a");
+  link.href = "#";
+  link.textContent = name;
+  link.style.cursor = "pointer";
+  link.style.textDecoration = "none";
+  link.style.color = "inherit";
+  link.style.display = "block";
+
+  node.appendChild(link);
 
   const childrenContainer = document.createElement("div");
   childrenContainer.classList.add("children");
   node.appendChild(childrenContainer);
 
-  node.addEventListener("click", async (e) => {
-    e.stopPropagation();
-
+  // Function to load folder contents
+  const loadFolderContents = async () => {
     if (node.classList.contains("loaded")) {
       node.classList.toggle("open");
       return;
@@ -102,6 +116,17 @@ async function buildPlusFolderNode(path, name) {
       const child = buildFileNode(file.path, cleanName);
       childrenContainer.appendChild(child);
     }
+  };
+
+  link.addEventListener("click", async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    await loadFolderContents();
+    await autoLoadFirstMarkdown(path);
+  });
+
+  node.addEventListener("click", async (e) => {
+    e.stopPropagation();
   });
 
   return node;
@@ -141,8 +166,17 @@ async function buildTopMenu() {
 
     const item = document.createElement("div");
     item.classList.add("topmenu-item");
-    item.textContent = cleanName;
     item.style.position = "relative";
+
+    // Clickable text
+    const itemText = document.createElement("a");
+    itemText.href = "#";
+    itemText.textContent = cleanName;
+    itemText.style.textDecoration = "none";
+    itemText.style.color = "white";
+    itemText.style.cursor = "pointer";
+
+    item.appendChild(itemText);
 
     const dropdown = document.createElement("div");
     dropdown.classList.add("dropdown");
@@ -170,14 +204,20 @@ async function buildTopMenu() {
     for (const sub of plusFolders) {
       const subClean = sub.name.replace(/^\+/, "");
 
-      const subItem = document.createElement("div");
+      const subItem = document.createElement("a");
       subItem.classList.add("dropdown-item");
       subItem.textContent = subClean;
+      subItem.href = "#";
+      subItem.style.display = "block";
+      subItem.style.textDecoration = "none";
+      subItem.style.color = "#333";
 
       subItem.addEventListener("click", async (e) => {
+        e.preventDefault();
         e.stopPropagation();
         await loadSidebarForFolder(folder.name, sub.path, `${cleanName} / ${subClean}`);
         await autoLoadFirstMarkdown(sub.path);
+        dropdown.style.display = "none";
       });
 
       dropdown.appendChild(subItem);
@@ -188,13 +228,19 @@ async function buildTopMenu() {
     for (const file of mdFiles) {
       const fileClean = file.name.replace(/\.md$/, "");
 
-      const subItem = document.createElement("div");
+      const subItem = document.createElement("a");
       subItem.classList.add("dropdown-item");
       subItem.textContent = fileClean;
+      subItem.href = "#";
+      subItem.style.display = "block";
+      subItem.style.textDecoration = "none";
+      subItem.style.color = "#333";
 
       subItem.addEventListener("click", async (e) => {
+        e.preventDefault();
         e.stopPropagation();
         await loadFile(file.path);
+        dropdown.style.display = "none";
       });
 
       dropdown.appendChild(subItem);
@@ -205,23 +251,21 @@ async function buildTopMenu() {
   }
 }
 
-
-
 /* ---------------------------------------------------------
    SIDEBAR FOR _folder → +folders → .md files
 --------------------------------------------------------- */
 async function loadSidebarForFolder(rootFolderName, path, label) {
   sidebar.innerHTML = "";
 
-  // Header showing current section
+  // Header showing current section (bold, larger)
   const header = document.createElement("div");
-  header.classList.add("folder");
+  header.classList.add("sidebar-header");
   header.textContent = label;
   sidebar.appendChild(header);
 
   const items = await fetchFolder(path);
 
-  // +folders
+  // +folders (regular weight, same size as header)
   const plusFolders = items.filter(i => i.type === "dir" && i.name.startsWith("+"));
   for (const folder of plusFolders) {
     const cleanName = folder.name.replace(/^\+/, "");
@@ -229,7 +273,7 @@ async function loadSidebarForFolder(rootFolderName, path, label) {
     sidebar.appendChild(node);
   }
 
-  // Markdown files
+  // Markdown files (indented, smaller)
   const mdFiles = items.filter(i => i.name.endsWith(".md"));
   for (const file of mdFiles) {
     const cleanName = file.name.replace(/\.md$/, "");
@@ -241,9 +285,8 @@ async function loadSidebarForFolder(rootFolderName, path, label) {
   await autoLoadFirstMarkdown(path);
 }
 
-
 /* ---------------------------------------------------------
-   INIT
+   AUTO LOAD FIRST MARKDOWN
 --------------------------------------------------------- */
 async function autoLoadFirstMarkdown(path) {
   const items = await fetchFolder(path);
@@ -254,5 +297,11 @@ async function autoLoadFirstMarkdown(path) {
   }
 }
 
+/* ---------------------------------------------------------
+   INIT
+--------------------------------------------------------- */
+async function init() {
+  await buildTopMenu();
+}
 
 init();
