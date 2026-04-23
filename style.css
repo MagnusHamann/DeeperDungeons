@@ -1,9 +1,9 @@
-
 body {
   margin: 0;
-  display: flex;
   height: 100vh;
   font-family: sans-serif;
+  display: flex;
+  flex-direction: column; /* topmenu on top, main area below */
 }
 
 /* TOP MENU BAR */
@@ -58,6 +58,12 @@ body {
   background: #e0e0e0;
 }
 
+/* MAIN AREA: sidebar + content */
+#main {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
 
 #sidebar {
   width: 280px;
@@ -72,76 +78,6 @@ body {
   cursor: pointer;
 }
 
-#sidebar .folder {
-  font-weight: bold;
-}
-
-#sidebar .item:hover {
-  background: #e0e0e0;
-}
-
-#sidebar .children {
-  margin-left: 15px;
-  display: none;
-}
-
-#sidebar .open > .children {
-  display: block;
-}
-
-  #content {
-  flex: 1;
-  padding: 40px;
-  overflow-y: auto;
-  background: #ffffff;
-}
-
-.markdown-body {
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-  overflow-y: auto;
-}
-
-.markdown-body h1,
-.markdown-body h2,
-.markdown-body h3 {
-  font-family: "Georgia", serif;
-  margin-top: 1.5em;
-}
-
-.markdown-body p {
-  line-height: 1.7;
-  font-size: 1.05rem;
-}
-
-.markdown-body blockquote {
-  border-left: 4px solid #c53030;
-  padding-left: 15px;
-  color: #444;
-  font-style: italic;
-  background: #faf6f6;
-}
-
-
-.markdown-body table {
-  border-collapse: collapse;
-  width: 100%;
-  margin: 1.5em 0;
-}
-
-.markdown-body th,
-.markdown-body td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-.markdown-body th {
-  background: #f0f0f0;
-  font-weight: bold;
-}
-
 /* Top-level headers */
 #sidebar .folder {
   font-size: 1.2rem;
@@ -149,6 +85,8 @@ body {
   margin-top: 12px;
   padding: 6px 4px;
   color: #333;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 4px;
 }
 
 /* Subheaders (files) */
@@ -178,15 +116,71 @@ body {
   border-radius: 4px;
 }
 
-#sidebar .folder {
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 4px;
+#sidebar .children {
+  margin-left: 15px;
+  display: none;
 }
 
+#sidebar .open > .children {
+  display: block;
+}
+
+/* Make top-level folders look like chapter titles */
 #sidebar > .folder {
   font-size: 1.3rem;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   color: #7a1b1b;
   margin-top: 20px;
+}
+
+/* CONTENT AREA */
+#content {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+  background: #ffffff;
+}
+
+/* GitHub-style markdown container */
+.markdown-body {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3 {
+  font-family: "Georgia", serif;
+  margin-top: 1.5em;
+}
+
+.markdown-body p {
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
+
+.markdown-body blockquote {
+  border-left: 4px solid #c53030;
+  padding-left: 15px;
+  color: #444;
+  font-style: italic;
+  background: #faf6f6;
+}
+
+.markdown-body table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5em 0;
+}
+
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.markdown-body th {
+  background: #f0f0f0;
+  font-weight: bold;
 }
