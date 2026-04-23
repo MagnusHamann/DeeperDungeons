@@ -14,12 +14,12 @@ async function fetchFolder(path) {
 }
 
 /* ---------------------------------------------------------
-   FILE NODE (subheader)
+   FILE NODE
 --------------------------------------------------------- */
 function buildFileNode(path, name) {
   const node = document.createElement("div");
   node.classList.add("item", "file");
-  node.textContent = name; // FIXED: removed accidental "+ name"
+  node.textContent = name;
 
   node.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -30,9 +30,9 @@ function buildFileNode(path, name) {
 }
 
 /* ---------------------------------------------------------
-   FOLDER NODE (sidebar-style)
+   +FOLDER NODE (sidebar only)
 --------------------------------------------------------- */
-async function buildFolderNode(path, name) {
+async function buildPlusFolderNode(path, name) {
   const node = document.createElement("div");
   node.classList.add("item", "folder");
   node.textContent = name;
@@ -54,15 +54,19 @@ async function buildFolderNode(path, name) {
 
     const items = await fetchFolder(path);
 
-    // Subfolders
-    for (const item of items.filter(i => i.type === "dir")) {
-      const child = await buildFolderNode(item.path, item.name.replace(/^[+_]/, ""));
+    // Only +folders inside this +folder
+    const plusFolders = items.filter(i => i.type === "dir" && i.name.startsWith("+"));
+    for (const folder of plusFolders) {
+      const cleanName = folder.name.replace(/^\+/, "");
+      const child = await buildPlusFolderNode(folder.path, cleanName);
       childrenContainer.appendChild(child);
     }
 
-    // Markdown files
-    for (const item of items.filter(i => i.name.endsWith(".md"))) {
-      const child = buildFileNode(item.path, item.name.replace(/\.md$/, ""));
+    // Markdown files inside this +folder
+    const mdFiles = items.filter(i => i.name.endsWith(".md"));
+    for (const file of mdFiles) {
+      const cleanName = file.name.replace(/\.md$/, "");
+      const child = buildFileNode(file.path, cleanName);
       childrenContainer.appendChild(child);
     }
   });
@@ -81,7 +85,7 @@ async function loadFile(path) {
 }
 
 /* ---------------------------------------------------------
-   TOP MENU (folders starting with "_")
+   TOP MENU (_folders)
 --------------------------------------------------------- */
 async function buildTopMenu() {
   const rootItems = await fetchFolder("");
@@ -101,9 +105,11 @@ async function buildTopMenu() {
     const contents = await fetchFolder(folder.path);
 
     for (const sub of contents) {
+      const cleanName = sub.name.replace(/^[+_]/, "").replace(/\.md$/, "");
+
       const subItem = document.createElement("div");
       subItem.classList.add("dropdown-item");
-      subItem.textContent = sub.name.replace(/\.md$/, "").replace(/^[+_]/, "");
+      subItem.textContent = cleanName;
 
       subItem.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -124,55 +130,35 @@ async function buildTopMenu() {
 }
 
 /* ---------------------------------------------------------
-   SIDEBAR FOR +FOLDERS (section navigation)
+   SIDEBAR FOR +FOLDERS AND .md FILES
 --------------------------------------------------------- */
 async function loadSidebarForPlusFolders(path) {
   sidebar.innerHTML = "";
 
   const items = await fetchFolder(path);
 
+  // Show ONLY +folders
   const plusFolders = items.filter(i => i.type === "dir" && i.name.startsWith("+"));
-  const mdFiles = items.filter(i => i.name.endsWith(".md"));
-
-  // +folders become headers
   for (const folder of plusFolders) {
-    const node = await buildFolderNode(folder.path, folder.name.replace(/^\+/, ""));
+    const cleanName = folder.name.replace(/^\+/, "");
+    const node = await buildPlusFolderNode(folder.path, cleanName);
     sidebar.appendChild(node);
   }
 
-  // Markdown files become subheaders
+  // Show .md files in this _folder
+  const mdFiles = items.filter(i => i.name.endsWith(".md"));
   for (const file of mdFiles) {
-    const node = buildFileNode(file.path, file.name.replace(/\.md$/, ""));
+    const cleanName = file.name.replace(/\.md$/, "");
+    const node = buildFileNode(file.path, cleanName);
     sidebar.appendChild(node);
   }
 }
 
 /* ---------------------------------------------------------
-   DEFAULT SIDEBAR (normal folders)
---------------------------------------------------------- */
-async function initSidebar() {
-  const rootItems = await fetchFolder("");
-
-  // Normal folders (not _ or +)
-  for (const item of rootItems.filter(i =>
-    i.type === "dir" && !i.name.startsWith("_") && !i.name.startsWith("+")
-  )) {
-    const folderNode = await buildFolderNode(item.path, item.name);
-    sidebar.appendChild(folderNode);
-  }
-
-  // Markdown files in root
-  for (const item of rootItems.filter(i => i.name.endsWith(".md"))) {
-    const fileNode = buildFileNode(item.path, item.name.replace(/\.md$/, ""));
-    sidebar.appendChild(fileNode);
-  }
-}
-
-/* ---------------------------------------------------------
-   INIT
+   INIT (sidebar starts empty)
 --------------------------------------------------------- */
 async function init() {
-  await initSidebar();
+  sidebar.innerHTML = ""; // Sidebar only fills when clicking top menu
   await buildTopMenu();
 }
 
