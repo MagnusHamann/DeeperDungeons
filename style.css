@@ -17,47 +17,32 @@ body {
   background: #7a1b1b;
   color: white;
   display: flex;
-  padding: 10px;
-  gap: 20px;
+  align-items: center;
+  justify-content: space-between; /* title left, menu right */
+  padding: 10px 20px;
   position: sticky;
   top: 0;
   z-index: 10;
   font-family: Georgia, serif;
 }
 
-.topmenu-item {
-  position: relative;
-  cursor: pointer;
-  font-size: 1.1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+/* Left-aligned site title */
+#site-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+  letter-spacing: 1px;
 }
 
-.dropdown {
-  display: none;
-  position: absolute;
-  top: 30px;
-  left: 0;
-  background: #f4f4f4;
-  color: #333;
-  min-width: 200px;
-  border: 1px solid #ccc;
-  padding: 10px 0;
-  z-index: 20;
+/* Container for menu items */
+#topmenu-items {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex: 1;
 }
 
-.topmenu-item:hover .dropdown {
-  display: block;
-}
-
-.dropdown-item {
-  padding: 6px 12px;
-  cursor: pointer;
-}
-
-.dropdown-item:hover {
-  background: #e0e0e0;
-}
 
 /* ---------------------------------------------------------
    MAIN AREA
