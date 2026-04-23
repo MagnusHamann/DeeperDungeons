@@ -6,14 +6,14 @@ const sidebar = document.getElementById("sidebar");
 const content = document.getElementById("content");
 const topmenu = document.getElementById("topmenu");
 
-// Add site title (left side)
+// Add site title (left-ish, but within centered bar)
 const siteTitle = document.createElement("a");
 siteTitle.id = "site-title";
 siteTitle.href = "index.html";
 siteTitle.textContent = "Deeper Dungeons";
 topmenu.appendChild(siteTitle);
 
-// Create container for menu items (center)
+// Container for menu items (center)
 const menuContainer = document.createElement("div");
 menuContainer.id = "topmenu-items";
 topmenu.appendChild(menuContainer);
@@ -97,55 +97,66 @@ async function loadFile(path) {
 }
 
 /* ---------------------------------------------------------
-   TOP MENU (_folders)
+   TOP MENU (_Classes only)
 --------------------------------------------------------- */
 async function buildTopMenu() {
   const rootItems = await fetchFolder("");
 
-  const topFolders = rootItems.filter(
-    i => i.type === "dir" && i.name.startsWith("_")
+  // Only the _Classes folder becomes a top menu item
+  const classesFolder = rootItems.find(
+    i => i.type === "dir" && i.name === "_Classes"
   );
 
-  for (const folder of topFolders) {
-    const item = document.createElement("div");
-    item.classList.add("topmenu-item");
-    item.textContent = folder.name.replace(/^_/, "");
+  if (!classesFolder) return;
 
-    const dropdown = document.createElement("div");
-    dropdown.classList.add("dropdown");
+  const item = document.createElement("div");
+  item.classList.add("topmenu-item");
+  item.textContent = "Classes";
 
-    const contents = await fetchFolder(folder.path);
+  const dropdown = document.createElement("div");
+  dropdown.classList.add("dropdown");
 
-    for (const sub of contents) {
-      const cleanName = sub.name.replace(/^[+_]/, "").replace(/\.md$/, "");
+  const contents = await fetchFolder(classesFolder.path);
 
-      const subItem = document.createElement("div");
-      subItem.classList.add("dropdown-item");
-      subItem.textContent = cleanName;
+  // Only +folders inside _Classes
+  const plusFolders = contents.filter(
+    sub => sub.type === "dir" && sub.name.startsWith("+")
+  );
 
-      subItem.addEventListener("click", (e) => {
-        e.stopPropagation();
+  for (const sub of plusFolders) {
+    const cleanName = sub.name.replace(/^\+/, "");
 
-        if (sub.type === "dir") {
-          loadSidebarForPlusFolders(sub.path);
-        } else {
-          loadFile(sub.path);
-        }
-      });
+    const subItem = document.createElement("div");
+    subItem.classList.add("dropdown-item");
+    subItem.textContent = cleanName;
 
-      dropdown.appendChild(subItem);
-    }
+    subItem.addEventListener("click", (e) => {
+      e.stopPropagation();
+      // Sidebar shows which section we're in
+      loadSidebarForPlusFolders(sub.path, `Classes / ${cleanName}`);
+    });
 
-    item.appendChild(dropdown);
-    menuContainer.appendChild(item);
+    dropdown.appendChild(subItem);
   }
+
+  item.appendChild(dropdown);
+  menuContainer.appendChild(item);
 }
 
 /* ---------------------------------------------------------
    SIDEBAR FOR +FOLDERS AND .md FILES
+   label = "Classes / Arcanist" etc.
 --------------------------------------------------------- */
-async function loadSidebarForPlusFolders(path) {
+async function loadSidebarForPlusFolders(path, label) {
   sidebar.innerHTML = "";
+
+  // Header showing current section
+  if (label) {
+    const header = document.createElement("div");
+    header.classList.add("folder");
+    header.textContent = label;
+    sidebar.appendChild(header);
+  }
 
   const items = await fetchFolder(path);
 
