@@ -20,6 +20,13 @@ topmenu.appendChild(siteTitle);
 --------------------------------------------------------- */
 const menuContainer = document.createElement("div");
 menuContainer.id = "topmenu-items";
+
+// ⭐ ADDED — ensure center menu is visible and centered
+menuContainer.style.display = "flex";
+menuContainer.style.flex = "1";
+menuContainer.style.justifyContent = "center";
+menuContainer.style.gap = "20px";
+
 topmenu.appendChild(menuContainer);
 
 /* ---------------------------------------------------------
@@ -121,7 +128,6 @@ async function buildTopMenu() {
     return;
   }
 
-  // All folders starting with "_"
   const topFolders = rootItems.filter(
     i => i.type === "dir" && i.name.startsWith("_")
   );
@@ -133,16 +139,26 @@ async function buildTopMenu() {
   for (const folder of topFolders) {
     const cleanName = folder.name.replace(/^_/, "");
 
-    // Create top-level menu item
     const item = document.createElement("div");
     item.classList.add("topmenu-item");
     item.textContent = cleanName;
 
-    // Dropdown container
+    // ⭐ ADDED — ensure dropdown anchors correctly
+    item.style.position = "relative";
+
     const dropdown = document.createElement("div");
     dropdown.classList.add("dropdown");
 
-    // Fetch contents of this _folder
+    // ⭐ ADDED — ensure dropdown is positioned correctly
+    dropdown.style.position = "absolute";
+    dropdown.style.top = "100%";
+    dropdown.style.left = "0";
+    dropdown.style.display = "none";
+    dropdown.style.zIndex = "9999";
+
+    item.addEventListener("mouseenter", () => dropdown.style.display = "block");
+    item.addEventListener("mouseleave", () => dropdown.style.display = "none");
+
     const contents = await fetchFolder(folder.path);
 
     if (!Array.isArray(contents)) {
@@ -150,9 +166,6 @@ async function buildTopMenu() {
       continue;
     }
 
-    /* ---------------------------------------------------------
-       +FOLDERS inside this _folder
-    --------------------------------------------------------- */
     const plusFolders = contents.filter(
       sub => sub.type === "dir" && sub.name.startsWith("+")
     );
@@ -173,9 +186,6 @@ async function buildTopMenu() {
       dropdown.appendChild(subItem);
     }
 
-    /* ---------------------------------------------------------
-       .MD FILES inside this _folder
-    --------------------------------------------------------- */
     const mdFiles = contents.filter(sub => sub.name.endsWith(".md"));
 
     for (const file of mdFiles) {
@@ -193,10 +203,7 @@ async function buildTopMenu() {
       dropdown.appendChild(subItem);
     }
 
-    // Attach dropdown to menu item
     item.appendChild(dropdown);
-
-    // Add to center menu container
     menuContainer.appendChild(item);
   }
 }
