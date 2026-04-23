@@ -111,11 +111,12 @@ async function loadFile(path) {
 }
 
 /* ---------------------------------------------------------
-   TOP MENU (all _folders)
+   TOP MENU (all _folders, with auto-load)
 --------------------------------------------------------- */
 async function buildTopMenu() {
   const rootItems = await fetchFolder("");
 
+  // All folders starting with "_"
   const topFolders = rootItems.filter(
     i => i.type === "dir" && i.name.startsWith("_")
   );
@@ -123,15 +124,21 @@ async function buildTopMenu() {
   for (const folder of topFolders) {
     const cleanName = folder.name.replace(/^_/, "");
 
+    // Create top-level menu item
     const item = document.createElement("div");
     item.classList.add("topmenu-item");
     item.textContent = cleanName;
 
+    // Dropdown container
     const dropdown = document.createElement("div");
     dropdown.classList.add("dropdown");
 
+    // Fetch contents of this _folder
     const contents = await fetchFolder(folder.path);
 
+    /* ---------------------------------------------------------
+       +FOLDERS inside this _folder
+    --------------------------------------------------------- */
     const plusFolders = contents.filter(
       sub => sub.type === "dir" && sub.name.startsWith("+")
     );
@@ -143,15 +150,24 @@ async function buildTopMenu() {
       subItem.classList.add("dropdown-item");
       subItem.textContent = subClean;
 
-      subItem.addEventListener("click", (e) => {
+      subItem.addEventListener("click", async (e) => {
         e.stopPropagation();
-        loadSidebarForFolder(folder.name, sub.path, `${cleanName} / ${subClean}`);
+
+        // Load sidebar
+        await loadSidebarForFolder(folder.name, sub.path, `${cleanName} / ${subClean}`);
+
+        // ⭐ Auto-load first markdown file inside this +folder
+        await autoLoadFirstMarkdown(sub.path);
       });
 
       dropdown.appendChild(subItem);
     }
 
+    /* ---------------------------------------------------------
+       .MD FILES inside this _folder
+    --------------------------------------------------------- */
     const mdFiles = contents.filter(sub => sub.name.endsWith(".md"));
+
     for (const file of mdFiles) {
       const fileClean = file.name.replace(/\.md$/, "");
 
@@ -159,18 +175,22 @@ async function buildTopMenu() {
       subItem.classList.add("dropdown-item");
       subItem.textContent = fileClean;
 
-      subItem.addEventListener("click", (e) => {
+      subItem.addEventListener("click", async (e) => {
         e.stopPropagation();
-        loadFile(file.path);
+        await loadFile(file.path);
       });
 
       dropdown.appendChild(subItem);
     }
 
+    // Attach dropdown to menu item
     item.appendChild(dropdown);
+
+    // Add to center menu container
     menuContainer.appendChild(item);
   }
 }
+
 
 /* ---------------------------------------------------------
    SIDEBAR FOR _folder → +folders → .md files
@@ -178,6 +198,7 @@ async function buildTopMenu() {
 async function loadSidebarForFolder(rootFolderName, path, label) {
   sidebar.innerHTML = "";
 
+  // Header showing current section
   const header = document.createElement("div");
   header.classList.add("folder");
   header.textContent = label;
@@ -185,6 +206,7 @@ async function loadSidebarForFolder(rootFolderName, path, label) {
 
   const items = await fetchFolder(path);
 
+  // +folders
   const plusFolders = items.filter(i => i.type === "dir" && i.name.startsWith("+"));
   for (const folder of plusFolders) {
     const cleanName = folder.name.replace(/^\+/, "");
@@ -192,19 +214,30 @@ async function loadSidebarForFolder(rootFolderName, path, label) {
     sidebar.appendChild(node);
   }
 
+  // Markdown files
   const mdFiles = items.filter(i => i.name.endsWith(".md"));
   for (const file of mdFiles) {
     const cleanName = file.name.replace(/\.md$/, "");
     const node = buildFileNode(file.path, cleanName);
     sidebar.appendChild(node);
   }
+
+  // ⭐ Auto-load first markdown file
+  await autoLoadFirstMarkdown(path);
 }
+
 
 /* ---------------------------------------------------------
    INIT
 --------------------------------------------------------- */
-async function init() {
-  await buildTopMenu();
+async function autoLoadFirstMarkdown(path) {
+  const items = await fetchFolder(path);
+  const mdFiles = items.filter(i => i.name.endsWith(".md"));
+
+  if (mdFiles.length > 0) {
+    await loadFile(mdFiles[0].path);
+  }
 }
+
 
 init();
