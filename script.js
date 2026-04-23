@@ -6,19 +6,35 @@ const sidebar = document.getElementById("sidebar");
 const content = document.getElementById("content");
 const topmenu = document.getElementById("topmenu");
 
-// Add site title (left-ish, but within centered bar)
+/* ---------------------------------------------------------
+   LEFT: Site title
+--------------------------------------------------------- */
 const siteTitle = document.createElement("a");
 siteTitle.id = "site-title";
 siteTitle.href = "index.html";
 siteTitle.textContent = "Deeper Dungeons";
 topmenu.appendChild(siteTitle);
 
-// Container for menu items (center)
+/* ---------------------------------------------------------
+   CENTER: Menu container
+--------------------------------------------------------- */
 const menuContainer = document.createElement("div");
 menuContainer.id = "topmenu-items";
 topmenu.appendChild(menuContainer);
 
-// Fetch folder contents from GitHub API
+/* ---------------------------------------------------------
+   RIGHT: Buy me a coffee link
+--------------------------------------------------------- */
+const coffee = document.createElement("a");
+coffee.id = "coffee-link";
+coffee.href = "https://buymeacoffee.com/deeperdungeons";
+coffee.target = "_blank";
+coffee.textContent = "Buy me a coffee";
+topmenu.appendChild(coffee);
+
+/* ---------------------------------------------------------
+   Fetch folder contents from GitHub
+--------------------------------------------------------- */
 async function fetchFolder(path) {
   const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
   const res = await fetch(apiUrl);
@@ -66,7 +82,6 @@ async function buildPlusFolderNode(path, name) {
 
     const items = await fetchFolder(path);
 
-    // Only +folders
     const plusFolders = items.filter(i => i.type === "dir" && i.name.startsWith("+"));
     for (const folder of plusFolders) {
       const cleanName = folder.name.replace(/^\+/, "");
@@ -74,7 +89,6 @@ async function buildPlusFolderNode(path, name) {
       childrenContainer.appendChild(child);
     }
 
-    // Markdown files
     const mdFiles = items.filter(i => i.name.endsWith(".md"));
     for (const file of mdFiles) {
       const cleanName = file.name.replace(/\.md$/, "");
@@ -95,13 +109,13 @@ async function loadFile(path) {
   const text = await res.text();
   content.innerHTML = marked.parse(text);
 }
+
 /* ---------------------------------------------------------
    TOP MENU (all _folders)
 --------------------------------------------------------- */
 async function buildTopMenu() {
   const rootItems = await fetchFolder("");
 
-  // All folders starting with "_"
   const topFolders = rootItems.filter(
     i => i.type === "dir" && i.name.startsWith("_")
   );
@@ -118,7 +132,6 @@ async function buildTopMenu() {
 
     const contents = await fetchFolder(folder.path);
 
-    // +folders inside this _folder
     const plusFolders = contents.filter(
       sub => sub.type === "dir" && sub.name.startsWith("+")
     );
@@ -138,7 +151,6 @@ async function buildTopMenu() {
       dropdown.appendChild(subItem);
     }
 
-    // .md files inside this _folder
     const mdFiles = contents.filter(sub => sub.name.endsWith(".md"));
     for (const file of mdFiles) {
       const fileClean = file.name.replace(/\.md$/, "");
@@ -166,7 +178,6 @@ async function buildTopMenu() {
 async function loadSidebarForFolder(rootFolderName, path, label) {
   sidebar.innerHTML = "";
 
-  // Header showing current section
   const header = document.createElement("div");
   header.classList.add("folder");
   header.textContent = label;
@@ -174,7 +185,6 @@ async function loadSidebarForFolder(rootFolderName, path, label) {
 
   const items = await fetchFolder(path);
 
-  // +folders
   const plusFolders = items.filter(i => i.type === "dir" && i.name.startsWith("+"));
   for (const folder of plusFolders) {
     const cleanName = folder.name.replace(/^\+/, "");
@@ -182,7 +192,6 @@ async function loadSidebarForFolder(rootFolderName, path, label) {
     sidebar.appendChild(node);
   }
 
-  // Markdown files
   const mdFiles = items.filter(i => i.name.endsWith(".md"));
   for (const file of mdFiles) {
     const cleanName = file.name.replace(/\.md$/, "");
@@ -190,7 +199,6 @@ async function loadSidebarForFolder(rootFolderName, path, label) {
     sidebar.appendChild(node);
   }
 }
-
 
 /* ---------------------------------------------------------
    INIT
