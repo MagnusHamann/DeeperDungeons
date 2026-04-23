@@ -1,81 +1,16 @@
-const owner = "MagnusHamann";
-const repo = "DeeperDungeons";
-let currentPath = "";   // start at repo root, or set e.g. "docs"
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Deeper Dungeons</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
 
-const menu = document.getElementById("fileMenu");
-const content = document.getElementById("content");
+  <div id="sidebar"></div>
+  <div id="content"></div>
 
-// Load contents of a folder
-async function loadFolder(path) {
-  currentPath = path;
-
-  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
-  const res = await fetch(apiUrl);
-  const items = await res.json();
-
-  // Clear menu
-  menu.innerHTML = "";
-
-  // Add "go up" option if not at root
-  if (path !== "") {
-    const up = document.createElement("option");
-    up.value = "..";
-    up.textContent = "⬆️ Up one level";
-    menu.appendChild(up);
-  }
-
-  // Folders first
-  items
-    .filter(i => i.type === "dir")
-    .forEach(folder => {
-      const opt = document.createElement("option");
-      opt.value = folder.path;
-      opt.textContent = "📁 " + folder.name;
-      opt.dataset.type = "folder";
-      menu.appendChild(opt);
-    });
-
-  // Markdown files (display name without .md)
-  items
-    .filter(i => i.name.endsWith(".md"))
-    .forEach(file => {
-      const opt = document.createElement("option");
-      opt.value = file.path;
-      opt.textContent = "📄 " + file.name.replace(/\.md$/, "");
-      opt.dataset.type = "file";
-      menu.appendChild(opt);
-    });
-
-  // Clear content when navigating folders
-  content.innerHTML = "";
-}
-
-// Load a markdown file
-async function loadFile(path) {
-  const rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${path}`;
-  const res = await fetch(rawUrl);
-  const text = await res.text();
-
-  content.innerHTML = marked.parse(text);
-}
-
-// Handle menu selection
-menu.addEventListener("change", (e) => {
-  const selected = e.target.selectedOptions[0];
-  const type = selected.dataset.type;
-  const value = selected.value;
-
-  if (value === "..") {
-    // Go up one level
-    const parts = currentPath.split("/").filter(Boolean);
-    parts.pop();
-    loadFolder(parts.join("/"));
-  } else if (type === "folder") {
-    loadFolder(value);
-  } else if (type === "file") {
-    loadFile(value);
-  }
-});
-
-// Start at root (or set your own starting folder)
-loadFolder(currentPath);
+  <script src="script.js"></script>
+</body>
+</html>
