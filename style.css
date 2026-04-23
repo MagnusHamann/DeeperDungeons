@@ -10,7 +10,7 @@ body {
 }
 
 /* ---------------------------------------------------------
-   TOP MENU
+   TOP MENU (SemDial-style)
 --------------------------------------------------------- */
 #topmenu {
   width: 100%;
@@ -43,6 +43,78 @@ body {
   flex: 1;
 }
 
+/* Top-level menu items */
+.topmenu-item {
+  position: relative;
+  cursor: pointer;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0 10px;
+}
+
+/* Dropdown */
+.dropdown {
+  display: none;
+  position: absolute;
+  top: 100%; /* sits directly under the menu item */
+  left: 0;
+  background: #f4f4f4;
+  color: #333;
+  min-width: 200px;
+  border: 1px solid #ccc;
+  padding: 10px 0;
+  z-index: 20;
+}
+
+/* Keep dropdown open while hovering */
+.topmenu-item:hover .dropdown,
+.dropdown:hover {
+  display: block;
+}
+
+.dropdown-item {
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: #e0e0e0;
+}
+
+/* ---------------------------------------------------------
+   MOBILE MENU
+--------------------------------------------------------- */
+@media (max-width: 700px) {
+
+  #topmenu {
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+  }
+
+  #topmenu-items {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .topmenu-item {
+    padding: 8px 0;
+  }
+
+  .dropdown {
+    position: static;
+    width: 100%;
+    border: none;
+    box-shadow: none;
+  }
+
+  .dropdown-item {
+    padding: 10px;
+  }
+}
 
 /* ---------------------------------------------------------
    MAIN AREA
