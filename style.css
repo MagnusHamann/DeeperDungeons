@@ -22,38 +22,46 @@ body {
   color: white;
   display: flex;
   align-items: center;
-  justify-content: center; /* center the whole bar content */
+  justify-content: space-between;   /* three columns: left, center, right */
   padding: 10px 20px;
   position: sticky;
   top: 0;
-  z-index: 1000;          /* ensure menu stays above everything */
+  z-index: 1000;
   font-family: Georgia, serif;
   box-sizing: border-box;
-  gap: 40px;
-
-  position: relative;     /* allows dropdowns to anchor properly */
-  overflow: visible;      /* prevents dropdown clipping */
+  overflow: visible;                /* allow dropdowns to float */
 }
 
-/* Left-aligned site title, but within centered flex */
+/* Left-aligned site title */
 #site-title {
   font-size: 1.4rem;
   font-weight: bold;
   color: white;
   text-decoration: none;
   letter-spacing: 1px;
+  margin-right: auto;               /* push center menu to the middle */
 }
 
-/* Container for menu items */
+/* Center container for menu items */
 #topmenu-items {
   display: flex;
   gap: 20px;
   justify-content: center;
+  flex: 1;                          /* center this group */
+}
+
+/* Right-aligned Buy Me a Coffee link */
+#coffee-link {
+  margin-left: auto;                /* push it to the right */
+  font-size: 1.1rem;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
 }
 
 /* Top-level menu items */
 .topmenu-item {
-  position: relative;     /* dropdown anchors to this */
+  position: relative;
   cursor: pointer;
   font-size: 1.1rem;
   text-transform: uppercase;
@@ -65,14 +73,14 @@ body {
 .dropdown {
   display: none;
   position: absolute;
-  top: 100%;              /* directly under menu item */
+  top: 100%;
   left: 0;
   background: #f4f4f4;
   color: #333;
   min-width: 200px;
   border: 1px solid #ccc;
   padding: 10px 0;
-  z-index: 9999;          /* floats above everything */
+  z-index: 9999;
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
@@ -90,6 +98,7 @@ body {
 .dropdown-item:hover {
   background: #e0e0e0;
 }
+
 
 /* ---------------------------------------------------------
    MOBILE MENU
