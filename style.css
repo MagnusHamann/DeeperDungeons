@@ -130,3 +130,10 @@ body {
   padding-bottom: 4px;
 }
 
+#sidebar > .folder {
+  font-size: 1.3rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #7a1b1b;
+  margin-top: 20px;
+}
