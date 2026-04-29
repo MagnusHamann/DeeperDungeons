@@ -1,23 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/marked@14.0.0/marked.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
+  <title>My RPG Site</title>
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
 <body>
 
-  <!-- TOP MENU (JS populates this) -->
-  <div id="topmenu"></div>
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <a href="index.html">Home</a>
+    <a href="page.html?path=ranger">Ranger</a>
+    <a href="page.html?path=wizard">Wizard</a>
+    <a href="page.html?path=spells">Spells</a>
+  </nav>
 
-  <div id="main">
-    <div id="sidebar"></div>
-    <div id="content" class="markdown-body"></div>
+  <!-- Hero Image -->
+  <div class="hero">
+    <img src="assets/images/banner.jpg" alt="Banner">
   </div>
 
-  <script src="script.js"></script>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside id="sidebar"></aside>
+
+    <!-- Main Content -->
+    <main id="content"></main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="assets/js/loader.js"></script>
+
 </body>
 </html>
