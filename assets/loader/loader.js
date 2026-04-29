@@ -16,15 +16,20 @@ async function loadContent() {
 async function loadSidebar(section) {
   const sidebar = document.getElementById("sidebar");
 
-  // You can replace this with a JSON file or auto‑generation
-  const menu = {
-    ranger: ["stalker", "hunter", "beast-master"],
-    wizard: ["evoker", "illusionist"]
-  };
+  // Load the folder index.md
+  const indexFile = `/content/${section}/index.md`;
+  const response = await fetch(indexFile);
+  const text = await response.text();
 
-  sidebar.innerHTML = menu[section]
-    .map(item => `<a href="page.html?path=${section}/${item}">${item.replace("-", " ")}</a>`)
+  // Extract file names from markdown list
+  const files = [...text.matchAll(/- (.+\.md)/g)].map(m => m[1]);
+
+  // Build sidebar links
+  sidebar.innerHTML = files
+    .map(file => {
+      const name = file.replace(".md", "").replace("-", " ");
+      return `<a href="page.html?path=${section}/${file.replace(".md", "")}">${name}</a>`;
+    })
     .join("<br>");
 }
 
-loadContent();
