@@ -1,3 +1,0 @@
-# barbarian
-
-lorem ipsum
